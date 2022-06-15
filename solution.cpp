@@ -14,8 +14,15 @@ using namespace std;
 
 /*takeaways
   - two cases
-    - paths include the root (parent) node
-    - paths don't include the root (parent) node
+    - the path includes the root, the left, and the right
+      - we evaluate the sum right away as we don't need
+        to include the parent hence have enough information
+    - the path includes the root and one child
+      - we return either root + left or root + right
+      - this is to allow us to include the parent in
+        the path
+  - time complexity is O(n) as you need to visit
+    every node.
 */
 int Solution::maxPathSum(Node *root)
 {
@@ -38,13 +45,19 @@ int Solution::_maxPathSum(Node *root, int &sum)
   auto ls = max(0, _maxPathSum(root->left, sum));
   auto rs = max(0, _maxPathSum(root->right, sum));
   auto ps = ls + rs + root->val;
-  /* see if the path sum will increase by including the root
-     - this is the case where the path doesn't include the
-       parent node
+  /* evaluate the sum
+     - the path doesn't include the parent since you evaluate
+       the root, the left, and the right
+     - there are 3 different paths
+     - root alone (both the left and the right chidlren's sum is negative)
+     - root + left (only the left is positive)
+     - root + right (only the right is positive)
   */
   sum = max(sum, ps);
 
-  /* report which child will contribute to the sum more
+  /* report which path will contribute to the sum more
+     - we report back either root + left or
+       root + right
      - this is the case where the path includes the
        root and one of its child
      - this allows the root's parent to be included
